@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafio Musical</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .container { width: 100%; max-width: 420px; margin-top: 20px; }
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
+    header p { margin-top: 8px; font-size: 0.95rem; color: #aaa; }
+    .card {
+      background: #2a2a2a;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #3a3a3a;
+    }
+    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .card-desc { font-size: 0.9rem; color: #bbb; margin-bottom: 16px; line-height: 1.4; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f5a623;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-secondary { background: #3a3a3a; color: #e0e0e0; }
+    .reveal-box {
+      display: none;
+      background: #1f3a2f;
+      border: 1px solid #2e5c45;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+      text-align: center;
+    }
+    .reveal-box.show { display: block; }
+    .reveal-box .song-name { font-size: 1.15rem; font-weight: 700; color: #7dcea0; }
+    .reveal-box .artist { font-size: 0.95rem; color: #a8d5b5; margin-top: 4px; }
+    .new-song { margin-top: 24px; text-align: center; }
+    footer { margin-top: 40px; font-size: 0.8rem; color: #666; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎵 DESAFIO MUSICAL</h1>
+      <p>Escolha uma opção por vez. Não pule para a resposta! 😄</p>
+    </header>
+
+    <div class="card">
+      <div class="card-title">🎵 OPÇÃO 1 – QUEM CANTA?</div>
+      <div class="card-desc">Ouça o instrumental e tente descobrir quem está cantando.</div>
+      <a id="btn-instrumental" class="btn" href="#" target="_blank">▶ Ouvir instrumental</a>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎤 OPÇÃO 2 – QUAL É A MÚSICA?</div>
+      <div class="card-desc">Agora ouça a música com a voz e tente descobrir o nome.</div>
+      <a id="btn-completa" class="btn" href="#" target="_blank">▶ Ouvir música</a>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎬 OPÇÃO 3 – MOSTRAR A MÚSICA</div>
+      <div class="card-desc">Clique somente depois das tentativas.</div>
+      <button id="btn-revelar" class="btn btn-secondary">Mostrar a música</button>
+      <div id="reveal" class="reveal-box">
+        <div class="song-name" id="reveal-name"></div>
+        <div class="artist" id="reveal-artist"></div>
+      </div>
+    </div>
+
+    <div class="new-song">
+      <button id="btn-nova" class="btn btn-secondary">🔀 Nova música</button>
+    </div>
+
+    <footer>Desafio Musical • Sorteio aleatório</footer>
+  </div>
+
+  <script>
+    const musicas = [
+      { nome: "Evidências", artista: "Chitãozinho & Xororó", instrumental: "https://www.youtube.com/watch?v=TGXkdU9S0OU", completa: "https://www.youtube.com/watch?v=ePjtnSPFWK8" },
+      { nome: "Sinônimos", artista: "Traia Véia", instrumental: "https://www.youtube.com/watch?v=dlAflqd3EMk", completa: "https://www.youtube.com/watch?v=UjRlx2_K1vw" },
+      { nome: "Menina Veneno", artista: "Ritchie", instrumental: "https://www.youtube.com/watch?v=ojzDJ1amfj4", completa: "https://www.youtube.com/watch?v=0m38EM0QumI" },
+      { nome: "Admirável Chip Novo", artista: "Pitty", instrumental: "https://www.youtube.com/watch?v=DvgTTU8H9O8", completa: "https://www.youtube.com/watch?v=aXJ_Ub1xbhw" },
+      { nome: "Mina do Condomínio", artista: "Seu Jorge", instrumental: "https://www.youtube.com/watch?v=WoLkiuX781I", completa: "https://www.youtube.com/watch?v=2GsBx_SmjOI" },
+      { nome: "O Descobridor dos Sete Mares", artista: "Diogo Nogueira / Tim Maia", instrumental: "https://www.youtube.com/watch?v=MRa-yG-_R4g", completa: "https://www.youtube.com/watch?v=SqN8jsncD4M" },
+      { nome: "Gatinha Assanhada", artista: "Gusttavo Lima", instrumental: "https://www.youtube.com/watch?v=lkr4lk6YJmY", completa: "https://www.youtube.com/watch?v=N1EwYpfUFQU" },
+      { nome: "Vou Festejar", artista: "Beth Carvalho", instrumental: "https://www.youtube.com/watch?v=-FiJyucZg3g", completa: "https://www.youtube.com/watch?v=JbhXehcpCPI" },
+      { nome: "Felicidade", artista: "Seu Jorge", instrumental: "https://www.youtube.com/watch?v=JlyW_SafGPE", completa: "https://www.youtube.com/watch?v=XQJOQcpsrTw" }
+    ];
+
+    let musicaAtual = null;
+
+    function sortearMusica() {
+      const index = Math.floor(Math.random() * musicas.length);
+      musicaAtual = musicas[index];
+      document.getElementById('btn-instrumental').href = musicaAtual.instrumental;
+      document.getElementById('btn-completa').href = musicaAtual.completa;
+      document.getElementById('reveal').classList.remove('show');
+      document.getElementById('reveal-name').textContent = '';
+      document.getElementById('reveal-artist').textContent = '';
+    }
+
+    document.getElementById('btn-revelar').addEventListener('click', function() {
+      if (!musicaAtual) return;
+      document.getElementById('reveal-name').textContent = musicaAtual.nome;
+      document.getElementById('reveal-artist').textContent = musicaAtual.artista;
+      document.getElementById('reveal').classList.add('show');
+    });
+
+    document.getElementById('btn-nova').addEventListener('click', sortearMusica);
+
+    sortearMusica();
+  </script>
+</body>
+</html>

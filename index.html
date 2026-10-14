@@ -7,34 +7,35 @@ function openSong(type) {
   area.classList.remove("hidden");
   area.innerHTML = "";
 
-  // Tenta extrair o ID do vídeo do YouTube
+  // Verifica se e um link direto do YouTube
   let videoId = null;
-  const watchMatch = url.match(/[?&]v=([^&]+)/);
-  if (watchMatch) {
-    videoId = watchMatch[1];
+  if (url.includes("watch?v=")) {
+    videoId = url.split("watch?v=")[1].split("&")[0];
   }
 
   if (videoId) {
-    // Tem link direto → coloca o player dentro do site
+    // Coloca o player dentro do site
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "315";
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-    iframe.title = "Player de música";
+    iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+    iframe.title = "Player de musica";
     iframe.frameBorder = "0";
-    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
     iframe.allowFullscreen = true;
     iframe.style.borderRadius = "12px";
     iframe.style.maxWidth = "100%";
     iframe.style.marginTop = "10px";
     area.appendChild(iframe);
   } else {
-    // É busca do YouTube → mostra o link, mas NÃO abre sozinho
+    // Mostra o link sem abrir sozinho
     const label = document.createElement("p");
     label.style.marginBottom = "8px";
-    label.textContent = type === "karaoke"
-      ? "🎤 Busca de karaokê (clique para escolher o vídeo):"
-      : "🎶 Busca da versão original (clique para escolher o vídeo):";
+    if (type === "karaoke") {
+      label.textContent = "Busca de karaoke (clique para escolher o video):";
+    } else {
+      label.textContent = "Busca da versao original (clique para escolher o video):";
+    }
 
     const link = document.createElement("a");
     link.href = url;
@@ -45,6 +46,7 @@ function openSong(type) {
     link.style.display = "inline-block";
     link.textContent = "Abrir busca no YouTube";
 
-    area.append(label, link);
+    area.appendChild(label);
+    area.appendChild(link);
   }
 }
